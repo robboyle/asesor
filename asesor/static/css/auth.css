@@ -1,0 +1,30 @@
+.errorlist {
+    font-size: 12px;
+    color: red;
+}
+form {
+    margin-top: 25px;
+}
+ul {
+    list-style-type: none;
+    margin-top: 0;
+    padding: 0;
+}
+ul.errorlist {
+    margin-bottom: 0;
+}
+.helptext {
+    display: block;
+    font-size: 13px;
+    color: gray;
+}
+p {
+    margin: 0 0 20px 0;
+}
+p.ui-state-error {
+    margin: 16px 0;
+}
+#id_languages {
+    display: block;
+    width: 200px;
+}

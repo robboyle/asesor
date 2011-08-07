@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block css %}
+{{ block.super }}
+<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/auth.css">
+{% endblock %}
+
+{% block script %}
+{{ block.super }}
+<script type="text/javascript">
+$(document).ready(function(){
+    $('label[for="id_user_type_0"]').parent().css('margin-bottom','0');
+    
+    $("#id_user_type_0").change(function(){
+        $("label[for='id_languages']").show();
+        $("#id_languages").show();
+    });
+    
+    $("#id_user_type_1").change(function(){
+        $("label[for='id_languages']").hide();
+        $("#id_languages").hide();
+    });
+    
+    $("#id_user_type_0").click();
+    
+    $("label[for='id_languages'], #id_languages").toggle($("#id_user_type_0").val() == 'translator');
+});
+</script>
+{% endblock %}
+
+{% block content %}
+{% if form.errors %}
+	<p style="padding: 10px" class="ui-state-error ui-corner-all">Please correct the errors below:</p>
+{% endif %}
+
+<form method="POST" action="{% url auth_register %}">
+	{% csrf_token %}
+	{{form.as_p}}
+	
+	<input type="submit" value="Create Account">
+</form>
+
+{% endblock %}

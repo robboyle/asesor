@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h3>{{ user.get_profile.user_type|title }} Dashboard</h3>
+    
+    <div class="dash-section">
+    <strong>Questions assigned to you needing a patient callback:</strong><br/>
+    {% if callback_qs %} 
+        <table>
+            {% for question in callback_qs %}
+                <tr>
+                    <td>
+                        <a href="{% url question question.id %}">{{ question.timestamp }}</a>
+                    </td>
+                    <td>
+                        {{ question.language }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <span style="font-size: 13px; color: #666">No questions assigned to you in need of patient callbacks.</span>
+    {% endif %}
+    </div>
+    
+    <div class="dash-section">
+    <strong>Questions assigned to you needing a translation:</strong><br/>
+    {% if translate_qs %}      
+        <table>
+            {% for question in translate_qs %}
+                <tr>
+                    <td>
+                        <a href="{% url question question.id %}">{{ question.timestamp }}</a>
+                    </td>
+                    <td>
+                        {{ question.language }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <span style="font-size: 13px; color: #666">No questions assigned to you awaiting translation.</span>
+    {% endif %}    
+    </div>
+    
+    <div class="dash-section">    
+    <strong>Unclaimed questions in need of translators:</strong><br/>
+    {% if available_qs %}
+        <table>
+            <t>
+            {% for question in available_qs %}
+                <tr>
+                    <td>
+                        <a href="{% url question question.id %}">{{ question.timestamp }}</a>
+                    </td>
+                    <td>
+                        - {{ question.language }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <span style="font-size: 13px; color: #666">No unclaimed questions in need of translators.</span>
+    {% endif %}
+
+{% endblock %}

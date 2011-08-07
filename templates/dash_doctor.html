@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h3>{{ user.get_profile.user_type|title }} Dashboard</h3>
+
+    <div class="dash-section">
+    <strong>Questions assigned to you in need of a medical answer:</strong><br/>
+    {% if answer_qs %}
+        <table>
+            {% for question in answer_qs %}
+                <tr>
+                    <td>
+                        <a href="{% url question question.id %}">{{ question.timestamp }}</a>
+                    </td>
+                    <td>
+                        {{ question.language }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <span style="font-size: 13px; color: #666">No questions assigned to you in need of answers.</span>
+    {% endif %}
+    </div>
+    
+    <div class="dash-section">
+    <strong>Unassigned questions in need of medical answers:</strong><br/>
+    {% if available_qs %}        
+        <table>
+            {% for question in available_qs %}
+                <tr>
+                    <td>
+                        <a href="{% url question question.id %}">{{ question.timestamp }}</a>
+                    </td>
+                    <td>
+                        {{ question.language }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <span style="font-size: 13px; color: #666">No unclaimed, translated questions in need of answers.</span>    
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block script %}
+{{ block.super }}
+{% if question.is_answered and not question.is_calledback %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#call-patient").button();
+        $("#hangup-patient").button();
+        
+        Twilio.Device.setup("{{ capability_token }}");
+        
+        Twilio.Device.ready(function(device){
+            $("#call-log").text("Ready");
+        });
+        
+        Twilio.Device.error(function (error) {
+            $("#call-log").text("Error: " + error.message);
+        });
+        
+        Twilio.Device.connect(function (conn) {
+            $("#call-log").text("Ringing...");
+        });
+        
+        Twilio.Device.disconnect(function (conn) {
+            $("#call-log").text("Call Ended");
+        });
+        
+        $("#call-patient").click(function() {
+            var params = { "question_id" : "{{ question.id }}" };
+            Twilio.Device.connect(params);
+                        
+            return false;
+        });
+        
+        $("#hangup-patient").click(function() {
+            Twilio.Device.disconnectAll();
+            
+            return false;
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+    
+<h3>Question - {{ question.language }} - {{ question.timestamp }}
+    <span style="color: grey">(assigned to: {% if question.translator %}{{ question.translator}}{% else %}unassigned{% endif %})</span>
+</h3>
+<div>
+    <div class="question-recording-container">
+        <strong>Original Question</strong><br/>
+        <audio  controls="controls">
+            <source src="{{question.recording_url}}.mp3" type="audio/mp3" />
+            <source src="{{question.recording_url}}.wave" type="audio/wav" />
+        </audio>
+    </div>
+    {% if not question.translator %}
+        This question has not been assigned a translator. Would you like to claim it?
+        <form method="POST" action="{% url question question.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="set_translator" value='True' />
+            <input type="submit" value="Claim this Question"/>
+        </form>
+    {% else %}
+        <div class="question-translation-container">
+        <strong>English Translation</strong><br/>
+        {% if not question.is_translated %}            
+            <form method="POST" action="{% url question question.id %}">
+                {% csrf_token %}
+                <textarea style="width: 600px; height: 200px; margin-bottom: 10px" name="translation">{{ question.translation }}</textarea>
+                <br/>
+                <input type="checkbox" name="is_translated">Finished with translation, question ready for a medical opinion.</input><br/>
+                <div style="color:grey; font-size: 12px; padding-left: 20px">
+                    Check this box when you are satisfied with your translation and are ready to send it to a medical professional.<br/>
+                    You may save your progress on an unfinished translation by clicking Save Translation without checking the box above.
+                </div><br/>
+                <input type="submit" value="Save Translation">
+            </form>
+        {% else %}
+            {{ question.translation }}
+        {% endif %}
+        </div>
+    
+        {% if question.is_answered %}
+            <div class="question-translation-container">
+                <strong>Medical Answer</strong><br/>
+                {{ question.answer }}
+            </div>
+        {% endif %}
+
+        {% if question.is_answered and not question.is_calledback %}
+            <div style="padding-bottom: 15px">
+                <a id="call-patient" class="ui-button" href="#">Call Patient</a>
+                <a id="hangup-patient" class="ui-button" href="#">Hangup</a>
+                <div style="font-size: 13px">Call Status: <span id="call-log" style="font-size: 13px"></span></div>
+            </div>
+            <form method="POST" action="{% url question question.id %}">
+                {% csrf_token %}
+                <input type="checkbox" name="is_calledback">Patient successfully called back! Retire this question.</input><br/>
+                <div style="color:grey; font-size: 12px; padding-left: 20px">
+                    Check this box and update the question after you have successfully called the patient back and<br/>
+                    given a translated version of the provided medical answer.
+                </div><br/>
+                <input type="submit" value="Update Question">
+            </a>
+        {% endif %}
+    {% endif %}
+</div>
+    
+{% endblock %}

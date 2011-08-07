@@ -1,0 +1,16 @@
+body {
+    font-family: 'Helvetica Neue', Helvetica, sans-serif;
+}
+
+.dash-section {
+    padding-bottom: 30px;
+}
+
+.question-recording-container {
+    padding-bottom: 20px;
+}
+
+.question-translation-container {
+    padding-bottom: 20px;
+}
+

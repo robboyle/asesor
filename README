@@ -1,0 +1,3 @@
+Source code for my medical question/translation/answer app. It's all django with a dash of jquery. It also leverages 
+the Twilio libraries and services to do the voice work. More info can be found at http://asesor.importrob.com or
+http://blog.importrob.com.

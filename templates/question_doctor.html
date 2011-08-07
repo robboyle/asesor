@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+    
+<h3>Question - {{ question.language }} - {{ question.timestamp }}
+    <span style="color: grey">(assigned to: {% if question.translator %}{{ question.translator}}{% else %}unassigned{% endif %})</span>
+</h3>
+<div>
+    <div class="question-recording-container">
+        <strong>Original Question</strong><br/>        
+        <audio  controls="controls">
+            <source src="{{question.recording_url}}.mp3" type="audio/mp3" />
+            <source src="{{question.recording_url}}.wav" type="audio/wav" />
+        </audio>    
+    </div>
+    <div class="question-translation-container">
+        <strong>English Translation</strong><br/>
+        {{ question.translation }}
+    </div>
+    {% if not question.doctor %}
+        This question has not been assigned a doctor. Would you like to claim it?
+        <form method="POST" action="{% url question question.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="set_doctor" value='True' />
+            <input type="submit" value="Claim this Question"/>
+        </form>
+    {% else %}
+        <strong>Medical Answer</strong><br/>
+        {% if not question.is_answered %}
+            <form method="POST" action="{% url question question.id %}">
+                {% csrf_token %}
+                <textarea style="width: 600px; height: 200px; margin-bottom: 10px" name="answer">{{ question.answer }}</textarea><br/>
+                <input type="checkbox" name="is_answered">Answer complete, send back to translator for a patient callback.</input>
+                <div style="color:grey; font-size: 12px; padding-left: 20px">
+                    Check this box when you are satisfied with your answer and wish to send it back to the original translator.<br/>
+                    The translator will then contact the original patient and deliver your answer. You can save your progress<br/>
+                    on an unfinished answer by clicking Save Answer without checking this box.
+                </div><br/>
+                <input type="submit" value="Save Answer">
+            </a>
+        {% else %}
+            {{ question.answer }}
+        {% endif %}
+    {% endif %}
+</div>
+    
+{% endblock %}

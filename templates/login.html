@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block css %}
+{{ block.super }}
+<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/auth.css">
+{% endblock %}
+
+{% block content %}
+	
+{% if form.errors %}
+<p class="ui-state-error ui-corner-all" style="padding: 10px">Your username and password did not match our records. Please try again</p>
+{% endif %}
+
+<form method="POST" action="{% url auth_login %}">
+	{% csrf_token %}
+	{{form.as_p}}
+	<input type="submit" value="Login"/>
+</form>
+
+{% endblock %}

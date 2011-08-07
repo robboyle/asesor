@@ -1,0 +1,46 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+{% block script %}
+<script type="text/javascript" src="{{STATIC_URL}}scripts/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}scripts/jquery-ui-1.8.14.custom.min.js"></script>
+<script type="text/javascript" src="https://static.twilio.com/libs/twiliojs/1.0/twilio.min.js"></script>
+{% endblock %}
+
+{% block css %}
+<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/base.css">
+<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/redmond/jquery-ui-1.8.14.custom.css">
+{% endblock %}
+</head>
+
+<body>
+<div style="padding-bottom: 10px; border-bottom: 1px solid #CCC">
+    <div style="font-size: 13px; float:right; font-weight: normal; color: gray;">Asynchronous, distributed medical advice</div>
+    
+    <h1>
+        Asesor
+    </h1>
+    
+    <a href="{% url about %}">About</a> &middot;
+    <a href="{% url dashboard %}">Dashboard</a>
+    {#  &middot; <a href="http://blog.importrob.com">Read the Blog Post</a> #}
+    <div style="float: right">
+        {% if user.is_authenticated %}
+            Welcome, {{ user.username}} ({{ user.get_profile.user_type }})
+            &middot;
+            <a href="{% url auth_logout %}">Logout</a>
+        {% else %}
+            <a href="{% url auth_login %}">Login</a> &middot; <a href="{% url auth_register %}">Register</a>
+        {% endif %}
+    </div>
+</div>
+
+{% block content %} {% endblock %}
+<div style="height: 30px"></div>
+<div style="height: 20px; padding: 10px; border-top: 1px solid #CCC">
+    <div style="text-align: center; font-size: 12px">&copy; 2011 Rob Boyle</div>
+</div>
+</body>
+
+</html>

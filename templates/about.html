@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p style="color: gray">
+   Browser Note: I've had the best luck with the HTML5 audio embed and the calling tools in Chrome. FireFox should work in theory, but
+   chrome seemse to work best. As always with browsers, YMMV. 
+</p>
+<h3>About</h3>
+<p>
+    Welcome to asesor, an asynchronous medical question/translation/answer app. For more detailed information, read 
+    <a href="http://blog.importrob.com/post/8607239436/asesor-a-medical-advice-app-using-django-twilio" target="_blank">the introductory blog post</a>.
+    If you'd like to see the source, visit <a href="github.com">the github repo</a>.
+</p>
+<p>
+    This is really just a proof of concept, so
+    <ul>
+        <li>Feel free to play around</li>
+        <li>Don't expect any actual medical advice</li>
+    </ul>
+    
+</p>
+<p>
+   <h3>The idea</h3>
+       The basic idea is that there are many people in rural areas or 3rd world countries without ready access to simple medical advice. On the
+       other hand, there are many 1st world translators and doctors who would love to volunteer their time and advice, but who are quite
+       busy and can't be at the whims of cross-world timezones. 
+       <br/><br/>
+       Asesor is a system that brings patients, translators, and doctors together asynchronously. Patients record their question, and it 
+       goes on to a queue. Translators pick questions off the queue when they have time and translate them. The translated question then
+       goes into a queue for doctors to see. The doctors pick questions off the queue when they have time, and answer them. The question
+       then goes back to the translator, who is responsible for calling the patient and communicating the answer in patient's language.
+       <br/><br/>
+       If that seems confusing, here's a quick flow-chart:<br/>
+       <img src="http://media.importrob.com/asesor_flow.001.jpg">
+</p>
+<p>
+    <h3>How it works</h3>
+    Asesor has 3 parts. Asking a question, translating the question, and answering the question. 
+    
+    <ol>
+        <li>
+    <h4>Asking a Question</h4>
+    To start the process, a prospective patient 
+    calls into the the Asesor # assigned to their language. For the moment I've set up two numbers, one for spanish and one for german:
+    <ul>
+        <li>
+            (415) 237-2135 - German
+        </li>
+        <li>
+            (650) 241-4435 - Spanish
+        </li>
+    </ul><br/>
+    The idea is that a patient lives in a rural area, speaks little or no english, and only has access to a telephone. Each question is
+    tagged with a language based on the number called. This language tagging and question recording is made possible by
+    <a href="http://twilio.com" target="_blank">Twilio</a>, who make telephony services super easy.
+    </li>
+    <li>
+    <h4>Translating a Question</h4>
+    The next step is a translator translates the question. If you <a href="{% url auth_register %}">create an account</a> as
+    a translator, you'll see any questions that come in in your language(s). After translating, the question is sent to the doctor queue.
+    </li>
+    <li>
+    <h4>Answering a Question</h4>
+    After being translated, the question is sent to the doctor queue. If you <a href="{% url auth_register %}">create an account</a> as
+    a doctor, you'll see all translated questions. Doctor's claim a question off the queue, read the translation, and enter their answer
+    for the patient. After they're done, the question goes back to the translator.
+    </li>
+    <li>
+    <h4>Calling back the Patient</h4>
+    Ok maybe I lied, perhaps there are 4 parts, but this last one is really part of the translating. 
+    The final step is for the translator to call the patient back and tell them the doctor's answer, 
+    translating it into their native language. The translator is able to call the patient right from their browser, without ever
+    knowing the patient's phone number (to protect their privacy). It also keeps translators from having to worry about paying for
+    international calls. This is all made possible by the totally rad <a href="http://www.twilio.com/api/client" target="_blank">Twilio Client</a>
+    which allows for in-browser calls to regular telephones.  
+    </li>
+    </ol>
+</p>
+<p>
+    <h3>From here on out</h3>
+    That's about it. Once again, this is just a proof of concept, so don't use it for actual medical advice. Do however play around
+    with it and let me know what you think! I've put some Twilio credit into it, but calls and recordings will slowly eat into it,
+    so if things seem to not be working right, I may just need to feed things some more quarters. If you have any questions or
+    comments, just hit me up <a href="http://blog.importrob.com" target="_blank">on my blog</a>.
+    <br/><br/>
+    I'm not sure this could really become a business, but it has the kernel of what I think would be a pretty sweet non-profit. 
+    The technology could certainly be improved, but there core tools are there. What's really needed is someone to put some TLC
+    into gathering together some translators and doctors. That's certainly the tricky part, but there's no shortage of willingness. 
+    With a dash of medical advisement and more than ~two weeks of hacking, it might be possible to get some medical advice to
+    those who need it. =)
+</p>
+
+{% endblock %}
